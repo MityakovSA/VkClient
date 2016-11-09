@@ -10,7 +10,11 @@ int main()
     std::cout << "access_token: ";
     std::cin >> token;
     Vk::Client client({{"token", token}});
-    if (client.check_connection()) std::cout << "Connected!" << std::endl;
+    if (client.check_connection())
+    {
+        std::cout << "Connected!" << std::endl;
+        client.get_groups(11);
+    }
     else std::cout << "Didn't connect!" << std::endl;
     return 0;
 }
