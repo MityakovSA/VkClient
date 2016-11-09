@@ -1,20 +1,19 @@
 cmake_minimum_required(VERSION 3.1)
 
-#set(SERVICE "Vkontakte")
+set(SERVICE "Vkontakte")
 
 project(VkClient)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-set(OPENSSL_ROOT_DIR /usr/local/openssl)
 
 option(BUILD_SHARED_LIBS "Build shared instead of static library" OFF)
 option(BUILD_TESTS "Build tests for vkclient" ON)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
-add_library(${PROJECT_NAME} STATIC ${CMAKE_CURRENT_SOURCE_DIR}/sources/client.cpp sources/client.cpp)
+add_library(${PROJECT_NAME} STATIC ${CMAKE_CURRENT_SOURCE_DIR}/sources/client.cpp)
 
 find_package(OpenSSL REQUIRED)
 find_package(CURL REQUIRED)
