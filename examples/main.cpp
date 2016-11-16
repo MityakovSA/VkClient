@@ -1,6 +1,5 @@
 #include <vk/client.hpp>
-#include <string>
-#include <iostream>
+
 
 int main()
 {
@@ -13,7 +12,7 @@ int main()
     if (client.check_connection())
     {
         std::cout << "Connected!" << std::endl;
-        client.get_groups(11);
+        client.get_groups(3);
     }
     else std::cout << "Didn't connect!" << std::endl;
     return 0;

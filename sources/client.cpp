@@ -1,11 +1,8 @@
 #include <vk/client.hpp>
-#include <curl/curl.h>
-#include <vk/json.hpp>
+
 
 namespace Vk
 {
-    using json = nlohmann::json;
-
     auto Client::check_connection() -> bool
     {
         CURL *easy_handle = curl_easy_init();
@@ -45,7 +42,7 @@ namespace Vk
         return false;
     }
 
-    auto Client::get_groups(size_t count) -> void
+    auto Client::get_groups(size_t count) -> json
     {
         CURL *easy_handle = curl_easy_init();
         if (easy_handle)
@@ -87,22 +84,22 @@ namespace Vk
                         }
                     }
                     curl_easy_cleanup(easy_handle);
-                    return;
+                    return response;
                 }
                 else
                 {
                     json error = server_answer["error"];
                     std::cout << "ERROR: " << error << std::endl;
                     curl_easy_cleanup(easy_handle);
-                    return;
+                    return nullptr;
                 }
             }
             std::cout << "Something wrong with easy performing!" << std::endl;
             curl_easy_cleanup(easy_handle);
-            return;
+            return nullptr;
         }
         std::cout << "Something wrong with initialization!" << std::endl;
-        return;
+        return nullptr;
     }
 
     auto Client::write_data(char* buffer, size_t size, size_t nmemb, std::string& userp) -> size_t
