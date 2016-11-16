@@ -12,7 +12,7 @@ int main()
     if (client.check_connection())
     {
         std::cout << "Connected!" << std::endl;
-        client.get_groups(3);
+        client.get_groups(3, 1);
     }
     else std::cout << "Didn't connect!" << std::endl;
     return 0;

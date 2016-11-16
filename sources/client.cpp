@@ -42,7 +42,7 @@ namespace Vk
         return false;
     }
 
-    auto Client::get_groups(size_t count) -> json
+    auto Client::get_groups(size_t count, bool ext) -> json
     {
         CURL *easy_handle = curl_easy_init();
         if (easy_handle)
@@ -63,7 +63,7 @@ namespace Vk
                 {
                     size_t g_count = response["count"];
                     std::cout << "TOTAL GROUPS COUNT: " << g_count << std::endl;
-                    if (g_count != 0)
+                    if ((g_count != 0) && (ext))
                     {
                         size_t counter = 0;
                         std::cout << "GROUPS:" << std::endl;

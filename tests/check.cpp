@@ -34,6 +34,25 @@ SCENARIO("Client must connect to server via access_token")
     }
 }
 
+
+SCENARIO("get_groups() must return nullptr if something goes wrong")
+{
+    GIVEN("Invalid token")
+    {
+        std::string token = "qwerty";
+        Vk::Client client({{"token", token}});
+        WHEN("Trying to get groups list")
+        {
+            bool check = (client.get_groups(3, 0) == nullptr);
+            THEN("get_groups() must return nullptr")
+            {
+                REQUIRE(check);
+            }
+        }
+    }
+}
+
+
 SCENARIO("get_groups() must get correct list of groups with their specifications")
 {
     GIVEN("Correct groups list")
@@ -45,7 +64,7 @@ SCENARIO("get_groups() must get correct list of groups with their specifications
         Vk::Client client({{"token", token}});
         WHEN("Trying to get groups list")
         {
-            Vk::json origin = client.get_groups(3);
+            Vk::json origin = client.get_groups(3, 0);
             bool compare = check == origin;
             THEN("JSON objects must be equivalent")
             {
