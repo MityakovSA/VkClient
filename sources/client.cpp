@@ -3,6 +3,34 @@
 
 namespace Vk
 {
+    auto print_groups(json groups) -> bool
+    {
+        if (!groups.empty()) {
+            size_t g_count = groups["count"];
+            std::cout << "TOTAL GROUPS COUNT: " << g_count << std::endl;
+            if (g_count != 0) {
+                size_t counter = 0;
+                std::cout << "GROUPS:" << std::endl;
+                json items = groups["items"];
+                for (json::iterator it = items.begin(); it != items.end(); ++it) {
+                    std::cout << ++counter << "." << std::endl;
+                    std::string buf1;
+                    int buf2;
+                    buf2 = it.value()["id"];
+                    std::cout << "ID: " << buf2 << std::endl;
+                    buf1 = it.value()["name"];
+                    std::cout << "NAME: " << buf1 << std::endl;
+                    buf1 = it.value()["type"];
+                    std::cout << "TYPE: " << buf1 << std::endl;
+                    buf2 = it.value()["is_closed"];
+                    std::cout << "IS CLOSED: " << (buf2 == 1 ? "TRUE" : "FALSE") << std::endl;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     auto Client::check_connection() -> bool
     {
         CURL *easy_handle = curl_easy_init();
@@ -42,7 +70,7 @@ namespace Vk
         return false;
     }
 
-    auto Client::get_groups(size_t count, bool ext) -> json
+    auto Client::get_groups(size_t count) -> json
     {
         CURL *easy_handle = curl_easy_init();
         if (easy_handle)
@@ -59,33 +87,7 @@ namespace Vk
             {
                 json server_answer = json::parse(internal_struct);
                 json response = server_answer["response"];
-                if (!response.empty())
-                {
-                    size_t g_count = response["count"];
-                    std::cout << "TOTAL GROUPS COUNT: " << g_count << std::endl;
-                    if ((g_count != 0) && (ext))
-                    {
-                        size_t counter = 0;
-                        std::cout << "GROUPS:" << std::endl;
-                        json groups = response["items"];
-                        for (json::iterator it = groups.begin(); it != groups.end(); ++it)
-                        {
-                            std::cout << ++counter << "." << std::endl;
-                            std::string buf1;
-                            int buf2;
-                            buf2 = it.value()["id"];
-                            std::cout << "ID: " << buf2 << std::endl;
-                            buf1 = it.value()["name"];
-                            std::cout << "NAME: " << buf1 << std::endl;
-                            buf1 = it.value()["type"];
-                            std::cout << "TYPE: " << buf1 << std::endl;
-                            buf2 = it.value()["is_closed"];
-                            std::cout << "IS CLOSED: " << (buf2 == 1 ? "TRUE" : "FALSE") << std::endl;
-                        }
-                    }
-                    curl_easy_cleanup(easy_handle);
-                    return response;
-                }
+                if (!response.empty()) return response;
                 else
                 {
                     json error = server_answer["error"];

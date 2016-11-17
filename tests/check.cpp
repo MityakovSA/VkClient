@@ -43,7 +43,7 @@ SCENARIO("get_groups() must return nullptr if something goes wrong")
         Vk::Client client({{"token", token}});
         WHEN("Trying to get groups list")
         {
-            bool check = (client.get_groups(3, 0) == nullptr);
+            bool check = (client.get_groups(3) == nullptr);
             THEN("get_groups() must return nullptr")
             {
                 REQUIRE(check);
@@ -64,7 +64,7 @@ SCENARIO("get_groups() must get correct list of groups with their specifications
         Vk::Client client({{"token", token}});
         WHEN("Trying to get groups list")
         {
-            Vk::json origin = client.get_groups(3, 0);
+            Vk::json origin = client.get_groups(3);
             bool compare = check == origin;
             THEN("JSON objects must be equivalent")
             {

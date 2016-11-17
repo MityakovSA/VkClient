@@ -12,7 +12,7 @@ int main()
     if (client.check_connection())
     {
         std::cout << "Connected!" << std::endl;
-        client.get_groups(3, 1);
+        Vk::print_groups(client.get_groups(3));
     }
     else std::cout << "Didn't connect!" << std::endl;
     return 0;
