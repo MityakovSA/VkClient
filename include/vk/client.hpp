@@ -34,6 +34,6 @@ namespace Vk
         };
     private:
         dict_t _settings;
-        static auto write_data(char* buffer, size_t size, size_t nmemb, std::string& userp) -> size_t;
+        static auto write_data(char* buffer, size_t size, size_t nmemb, std::string* userp) -> size_t;
     };
 }

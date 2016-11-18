@@ -43,7 +43,7 @@ namespace Vk
             curl_easy_setopt(easy_handle, CURLOPT_POSTFIELDS, post_fields.c_str());
             curl_easy_setopt(easy_handle, CURLOPT_POSTFIELDSIZE, post_fields.length());
             curl_easy_setopt(easy_handle, CURLOPT_WRITEFUNCTION, write_data);
-            curl_easy_setopt(easy_handle, CURLOPT_WRITEDATA, external_data);
+            curl_easy_setopt(easy_handle, CURLOPT_WRITEDATA, &external_data);
             if (curl_easy_perform(easy_handle) == CURLE_OK)
             {
                 json server_answer = json::parse(external_data);
@@ -79,7 +79,7 @@ namespace Vk
             curl_easy_setopt(easy_handle, CURLOPT_POSTFIELDS, post_fields.c_str());
             curl_easy_setopt(easy_handle, CURLOPT_POSTFIELDSIZE, post_fields.length());
             curl_easy_setopt(easy_handle, CURLOPT_WRITEFUNCTION, write_data);
-            curl_easy_setopt(easy_handle, CURLOPT_WRITEDATA, external_data);
+            curl_easy_setopt(easy_handle, CURLOPT_WRITEDATA, &external_data);
             if (curl_easy_perform(easy_handle) == CURLE_OK)
             {
                 json server_answer = json::parse(external_data);
@@ -98,10 +98,10 @@ namespace Vk
         throw Client_except("Something wrong with initialization!");
     }
 
-    auto Client::write_data(char* buffer, size_t size, size_t nmemb, std::string& userp) -> size_t
+    auto Client::write_data(char* buffer, size_t size, size_t nmemb, std::string* userp) -> size_t
     {
         size_t real_size = size * nmemb;
-        userp += buffer;
+        *userp += buffer;
         return real_size;
     }
 }
