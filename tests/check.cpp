@@ -11,9 +11,9 @@ SCENARIO("Client must connect to server via access_token")
         Vk::Client client({{"token", token}});
         WHEN("Trying to connect")
         {
-            THEN("check_connection() must return false")
+            THEN("check_connection() must throw exception")
             {
-                REQUIRE(client.check_connection() == false);
+                REQUIRE_THROWS_AS(client.check_connection(), Vk::Client::server_error);
             }
         }
     }
@@ -35,7 +35,7 @@ SCENARIO("Client must connect to server via access_token")
 }
 
 
-SCENARIO("get_groups() must return nullptr if something goes wrong")
+SCENARIO("get_groups() must throw exception something goes wrong")
 {
     GIVEN("Invalid token")
     {
@@ -43,10 +43,9 @@ SCENARIO("get_groups() must return nullptr if something goes wrong")
         Vk::Client client({{"token", token}});
         WHEN("Trying to get groups list")
         {
-            bool check = (client.get_groups(3) == nullptr);
-            THEN("get_groups() must return nullptr")
+            THEN("get_groups() must throw exception")
             {
-                REQUIRE(check);
+                REQUIRE_THROWS_AS(client.get_groups(3), Vk::Client::server_error);
             }
         }
     }

@@ -16,9 +16,17 @@ int main()
             Vk::print_groups(client.get_groups(3));
         } else std::cout << "Didn't connect!" << std::endl;
     }
-    catch(std::invalid_argument except)
+    catch(std::invalid_argument parse_except)
     {
-        std::cout << except.what() << std::endl;
+        std::cout << parse_except.what() << std::endl;
+    }
+    catch(Vk::Client::server_error error)
+    {
+        std::cout << error.what() << error._error << std::endl;
+    }
+    catch(Vk::Client::Client_except client_except)
+    {
+        std::cout << client_except.what() << std::endl;
     }
     return 0;
 }

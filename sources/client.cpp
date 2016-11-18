@@ -37,16 +37,16 @@ namespace Vk
         if (easy_handle)
         {
             std::string post_fields = "access_token=" + _settings["token"] + "&v=5.60";
-            std::string internal_struct;
+            std::string external_data;
             curl_easy_setopt(easy_handle, CURLOPT_URL, "https://api.vk.com/method/account.getInfo?");
             curl_easy_setopt(easy_handle, CURLOPT_POST, 1);
             curl_easy_setopt(easy_handle, CURLOPT_POSTFIELDS, post_fields.c_str());
             curl_easy_setopt(easy_handle, CURLOPT_POSTFIELDSIZE, post_fields.length());
             curl_easy_setopt(easy_handle, CURLOPT_WRITEFUNCTION, write_data);
-            curl_easy_setopt(easy_handle, CURLOPT_WRITEDATA, internal_struct);
+            curl_easy_setopt(easy_handle, CURLOPT_WRITEDATA, external_data);
             if (curl_easy_perform(easy_handle) == CURLE_OK)
             {
-                json server_answer = json::parse(internal_struct);
+                json server_answer = json::parse(external_data);
                 json response = server_answer["response"];
                 if (!response.empty())
                 {
@@ -57,17 +57,14 @@ namespace Vk
                 else
                 {
                     json error = server_answer["error"];
-                    std::cout << "ERROR: " << error << std::endl;
                     curl_easy_cleanup(easy_handle);
-                    return false;
+                    throw server_error("Server answered with error: ", error);
                 }
             }
-            std::cout << "Something wrong with easy performing!" << std::endl;
             curl_easy_cleanup(easy_handle);
-            return false;
+            throw Client_except("Something wrong with easy performing!");
         }
-        std::cout << "Something wrong with initialization!" << std::endl;
-        return false;
+        throw Client_except("Something wrong with initialization!");
     }
 
     auto Client::get_groups(size_t count) -> json
@@ -76,32 +73,29 @@ namespace Vk
         if (easy_handle)
         {
             std::string post_fields = "extended=1&offset=0&count=" + std::to_string(count) + "&access_token=" + _settings["token"] + "&v=5.60";
-            std::string internal_struct;
+            std::string external_data;
             curl_easy_setopt(easy_handle, CURLOPT_URL, "https://api.vk.com/method/groups.get?");
             curl_easy_setopt(easy_handle, CURLOPT_POST, 1);
             curl_easy_setopt(easy_handle, CURLOPT_POSTFIELDS, post_fields.c_str());
             curl_easy_setopt(easy_handle, CURLOPT_POSTFIELDSIZE, post_fields.length());
             curl_easy_setopt(easy_handle, CURLOPT_WRITEFUNCTION, write_data);
-            curl_easy_setopt(easy_handle, CURLOPT_WRITEDATA, internal_struct);
+            curl_easy_setopt(easy_handle, CURLOPT_WRITEDATA, external_data);
             if (curl_easy_perform(easy_handle) == CURLE_OK)
             {
-                json server_answer = json::parse(internal_struct);
+                json server_answer = json::parse(external_data);
                 json response = server_answer["response"];
                 if (!response.empty()) return response;
                 else
                 {
                     json error = server_answer["error"];
-                    std::cout << "ERROR: " << error << std::endl;
                     curl_easy_cleanup(easy_handle);
-                    return nullptr;
+                    throw server_error("Server answered with error!", error);
                 }
             }
-            std::cout << "Something wrong with easy performing!" << std::endl;
             curl_easy_cleanup(easy_handle);
-            return nullptr;
+            throw Client_except("Something wrong with easy performing!");
         }
-        std::cout << "Something wrong with initialization!" << std::endl;
-        return nullptr;
+        throw Client_except("Something wrong with initialization!");
     }
 
     auto Client::write_data(char* buffer, size_t size, size_t nmemb, std::string& userp) -> size_t
