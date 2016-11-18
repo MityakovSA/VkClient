@@ -3,7 +3,7 @@
 
 namespace Vk
 {
-    auto print_groups(json groups) -> bool
+    auto Client::print_groups(json groups) -> bool
     {
         if (!groups.empty()) {
             size_t g_count = groups["count"];

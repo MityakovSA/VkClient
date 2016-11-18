@@ -11,8 +11,6 @@ namespace Vk
 {
     using json = nlohmann::json;
 
-    auto print_groups(json groups) -> bool;
-
     class Client
     {
     public:
@@ -20,6 +18,7 @@ namespace Vk
         Client(dict_t settings) : _settings(settings) {};
         auto check_connection() -> bool;
         auto get_groups(size_t count) -> json;
+        static auto print_groups(json groups) -> bool;
         class Client_except : public std::runtime_error
         {
         public:
