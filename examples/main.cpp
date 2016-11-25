@@ -11,10 +11,19 @@ int main()
     Vk::Client client({{"token", token}});
     try
     {
-        if (client.check_connection()) {
+        if (client.check_connection())
+        {
             std::cout << "Connected!" << std::endl;
-            Vk::Client::print_groups(client.get_groups(3));
-        } else std::cout << "Didn't connect!" << std::endl;
+            std::string com = "";
+            std::cout << ">> ";
+            std::getline(std::cin, com);
+            std::getline(std::cin, com);
+            if (com == "close") return 0;
+            else if (com == "get_groups") Vk::Client::print_groups(client.get_groups(5), false);
+            else if (com == "get_groups -v") Vk::Client::print_groups(client.get_groups(5), true);
+            else std::cout << "Wrong command!" << std::endl;
+        }
+        else std::cout << "Didn't connect!" << std::endl;
     }
     catch(std::invalid_argument parse_except)
     {

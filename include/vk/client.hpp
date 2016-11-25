@@ -5,6 +5,13 @@
 #include <vk/json.hpp>
 #include <curl/curl.h>
 #include <exception>
+#include <thread>
+#include <vector>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+#include <ctime>
+
 
 
 namespace Vk
@@ -18,7 +25,8 @@ namespace Vk
         Client(dict_t settings) : _settings(settings) {};
         auto check_connection() -> bool;
         auto get_groups(size_t count) -> json;
-        static auto print_groups(json groups) -> bool;
+        static auto print_groups(json groups, bool f) -> bool;
+        static auto print_threads(int ind, int n, bool f) -> void;
         class Client_except : public std::runtime_error
         {
         public:
