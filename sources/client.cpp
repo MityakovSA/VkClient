@@ -11,50 +11,48 @@ bool done = false;
 
 namespace Vk
 {
-    auto Client::print_groups(json groups, bool f) -> bool
+    auto Client::print_groups(const json& groups, bool f) -> bool
     {
         if (!groups.empty())
         {
             size_t g_count = groups["count"];
             std::cout << "TOTAL GROUPS COUNT: " << g_count << std::endl;
-            if (g_count != 0)
+            if (g_count == 0) return true;
+            json items = groups["items"];
+            for (json::iterator it = items.begin(); it != items.end(); ++it) q_items.push(*it);
+            int _n = 0;
+            while (!_n)
             {
-                json items = groups["items"];
-                for (json::iterator it = items.begin(); it != items.end(); ++it) q_items.push(*it);
-                int _n = 0;
-                while (!_n)
+                std::cout << "Threads number: ";
+                if ((std::cin >> _n) && ((_n < 1) || (_n > std::thread::hardware_concurrency())))
                 {
-                    std::cout << "Threads number: ";
-                    std::cin >> _n;
-                    if ((_n < 1) || (_n > std::thread::hardware_concurrency()))
-                    {
-                        std::cout << "Wrong threads number!" << std::endl;
-                        _n = 0;
-                    }
+                    std::cout << "Wrong threads number!" << std::endl;
+                    _n = 0;
                 }
-                notified.push_back(true);
-                for(int i = 0; i < (_n-1); ++i)
-                {
-                    notified.push_back(false);
-                }
-                std::vector<std::thread> threads;
-                for(int i = 0; i < _n; ++i)
-                {
-                    threads.push_back(std::thread(print_threads, i, _n, f));
-                }
-                for(auto& t: threads)
-                    t.join();
             }
+            notified.push_back(true);
+            for(int i = 0; i < (_n-1); ++i)
+            {
+                notified.push_back(false);
+            }
+            std::vector<std::thread> threads;
+            for(int i = 0; i < _n; ++i)
+            {
+                threads.push_back(std::thread(thread_safe_print, i, _n, f));
+            }
+            for(auto& t: threads)
+                if (t.joinable()) t.join();
             return true;
         }
         return false;
     }
 
-    auto Client::print_threads(int ind, int n, bool f) -> void
+    auto Client::thread_safe_print(int ind, int n, bool f) -> void
     {
-        unsigned int start_time = clock();
+        unsigned int start_time;
         if (f)
         {
+            start_time = clock();
             std::unique_lock<std::mutex> locker(lockprint);
             std::cout << ind << ") THREAD_ID: " << std::this_thread::get_id() << std::endl;
         }
@@ -98,13 +96,13 @@ namespace Vk
                 check.notify_all();
             }
         }
-        unsigned int end_time = clock();
         if (f)
         {
             std::lock_guard<std::mutex> locker(lockprint);
             std::cout << std::endl;
             std::cout << std::this_thread::get_id() << " :" << std::endl;
             std::cout << "Starting time: " << start_time << std::endl;
+            unsigned int end_time = clock();
             std::cout << "Ending time: " << end_time << std::endl;
         }
         return;
