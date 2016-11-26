@@ -53,7 +53,7 @@ namespace Vk
         if (f)
         {
             start_time = clock();
-            std::unique_lock<std::mutex> locker(lockprint);
+            std::lock_guard<std::mutex> locker(lockprint);
             std::cout << ind << ") THREAD_ID: " << std::this_thread::get_id() << std::endl;
         }
         while (!done)
@@ -66,7 +66,7 @@ namespace Vk
             while ((!q_items.empty()) && (notified.at(ind)))
             {
                 std::this_thread::sleep_for(std::chrono::seconds(1));
-                std::unique_lock<std::mutex> locker(lockprint);
+                std::lock_guard<std::mutex> locker(lockprint);
                 std::cout << std::endl;
                 if (f)
                 {
