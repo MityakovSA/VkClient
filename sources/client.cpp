@@ -1,12 +1,10 @@
 #include <vk/client.hpp>
 
 
-std::mutex lockprint;
-std::mutex lockqueue;
+std::mutex lock;
 std::vector<bool> notified;
 std::queue<nlohmann::json> q_items;
 std::condition_variable check;
-bool done = false;
 
 
 namespace Vk
@@ -50,27 +48,33 @@ namespace Vk
     auto Client::thread_safe_print(int ind, int n, bool f) -> void
     {
         unsigned int start_time;
-        if (f)
+        if (f) start_time = clock();
+        while (1)
         {
-            start_time = clock();
-            std::lock_guard<std::mutex> locker(lockprint);
-            std::cout << ind << ") THREAD_ID: " << std::this_thread::get_id() << std::endl;
-        }
-        while (!done)
-        {
-            std::unique_lock<std::mutex> locker(lockqueue);
+            std::unique_lock<std::mutex> locker(lock);
             while (!notified.at(ind))
             {
                 check.wait(locker);
             }
+            if (q_items.empty())
+            {
+                if (f)
+                {
+                    std::cout << std::endl;
+                    std::cout << std::this_thread::get_id() << " :" << std::endl;
+                    std::cout << "Starting time: " << start_time << std::endl;
+                    unsigned int end_time = clock();
+                    std::cout << "Ending time: " << end_time << std::endl;
+                }
+                return;
+            }
             while ((!q_items.empty()) && (notified.at(ind)))
             {
                 std::this_thread::sleep_for(std::chrono::seconds(1));
-                std::lock_guard<std::mutex> locker(lockprint);
                 std::cout << std::endl;
                 if (f)
                 {
-                    std::cout << std::this_thread::get_id() << " :" << std::endl;
+                    std::cout << "THREAD_ID " << std::this_thread::get_id() << " :" << std::endl;
                     std::cout << std::endl;
                 }
                 std::string buf1;
@@ -84,28 +88,14 @@ namespace Vk
                 buf2 = q_items.front()["is_closed"];
                 std::cout << "IS CLOSED: " << (buf2 == 1 ? "TRUE" : "FALSE") << std::endl;
                 q_items.pop();
-                if (q_items.empty())
-                {
-                    done = true;
-                    for (int i = 0; i < n; ++i) notified.at(i) = true;
-                    check.notify_all();
-                }
                 notified.at(ind) = false;
                 if (ind == (n-1)) notified.at(0) = true;
                 else notified.at(ind+1) = true;
+                if (q_items.empty())
+                    for (int i = 0; i < n; ++i) notified.at(i) = true;
                 check.notify_all();
             }
         }
-        if (f)
-        {
-            std::lock_guard<std::mutex> locker(lockprint);
-            std::cout << std::endl;
-            std::cout << std::this_thread::get_id() << " :" << std::endl;
-            std::cout << "Starting time: " << start_time << std::endl;
-            unsigned int end_time = clock();
-            std::cout << "Ending time: " << end_time << std::endl;
-        }
-        return;
     }
 
     auto Client::check_connection() -> bool
