@@ -61,7 +61,7 @@ namespace Vk
                 if (f)
                 {
                     std::cout << std::endl;
-                    std::cout << std::this_thread::get_id() << " :" << std::endl;
+                    std::cout << std::this_thread::get_id() << ":" << std::endl;
                     std::cout << "Starting time: " << start_time << std::endl;
                     unsigned int end_time = clock();
                     std::cout << "Ending time: " << end_time << std::endl;
@@ -74,7 +74,7 @@ namespace Vk
                 std::cout << std::endl;
                 if (f)
                 {
-                    std::cout << "THREAD_ID " << std::this_thread::get_id() << " :" << std::endl;
+                    std::cout << "THREAD_ID " << std::this_thread::get_id() << ":" << std::endl;
                     std::cout << std::endl;
                 }
                 std::string buf1;
@@ -86,7 +86,7 @@ namespace Vk
                 buf1 = q_items.front()["type"];
                 std::cout << "TYPE: " << buf1 << std::endl;
                 buf2 = q_items.front()["is_closed"];
-                std::cout << "IS CLOSED: " << (buf2 == 1 ? "TRUE" : "FALSE") << std::endl;
+                std::cout << "IS_CLOSED: " << (buf2 == 1 ? "TRUE" : "FALSE") << std::endl;
                 q_items.pop();
                 notified.at(ind) = false;
                 if (ind == (n-1)) notified.at(0) = true;
