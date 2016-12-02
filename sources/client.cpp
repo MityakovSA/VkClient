@@ -21,7 +21,7 @@ namespace Vk
             int _n = 0;
             while (!_n)
             {
-                std::cout << "Threads number: ";
+                //std::cout << "Threads number: ";
                 if ((std::cin >> _n) && ((_n < 1) || (_n > std::thread::hardware_concurrency())))
                 {
                     std::cout << "Wrong threads number!" << std::endl;
@@ -117,7 +117,7 @@ namespace Vk
                 json response = server_answer["response"];
                 if (!response.empty())
                 {
-                    std::cout << "RESPONSE: " << response << std::endl;
+                    //std::cout << "RESPONSE: " << response << std::endl;
                     curl_easy_cleanup(easy_handle);
                     return true;
                 }

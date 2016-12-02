@@ -5,9 +5,9 @@ int main()
 {
     std::string token = "";
     std::string buf = "";
-    std::cout << "Enter access_token that you can get by following this URL:" << std::endl;
-    std::cout << "https://oauth.vk.com/authorize?client_id=5719838&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=friends&response_type=token&v=5.60" << std::endl;
-    std::cout << "access_token: ";
+    //std::cout << "Enter access_token that you can get by following this URL:" << std::endl;
+    //std::cout << "https://oauth.vk.com/authorize?client_id=5719838&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=friends&response_type=token&v=5.60" << std::endl;
+    //std::cout << "access_token: ";
     if (std::cin >> buf) token = buf;
     Vk::Client client({{"token", token}});
     try
@@ -16,7 +16,7 @@ int main()
         {
             std::cout << "Connected!" << std::endl;
             std::string com = "";
-            std::cout << ">> ";
+            //std::cout << ">> ";
             while (std::getline(std::cin, com))
             {
                 if (!(com == ""))
@@ -25,7 +25,7 @@ int main()
                     else if (com == "get_groups") Vk::Client::print_groups(client.get_groups(5), false);
                     else if (com == "get_groups -v") Vk::Client::print_groups(client.get_groups(5), true);
                     else std::cout << "Wrong command!" << std::endl;
-                    std::cout << ">> ";
+                    //std::cout << ">> ";
                 }
             }
         }
